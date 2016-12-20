@@ -106,11 +106,11 @@ void benchmark() {
   struct timeval start, end;
 
   // Make the test stable
-  srandom(1234);
+  srand(1234);
   
   uint8_t *strings[100];
   for (int i = 0; i < 100; i++) {
-    size_t len = 1 + random() % 2;//i * i + 1;
+    size_t len = 1 + rand() % 2;//i * i + 1;
     strings[i] = (uint8_t *)calloc(1, len + 1);
     random_ascii_string(strings[i], len + 1);
 //    random_unicode_string(strings[i], len + 1);
@@ -119,7 +119,7 @@ void benchmark() {
   // We should pick the same random sequence each benchmark run.
   unsigned long *rvals = (unsigned long *)malloc(sizeof(unsigned long) * iterations);
   for (int i = 0; i < iterations; i++) {
-    rvals[i] = random();
+    rvals[i] = rand();
   }
 
 //  for (int t = 0; t < sizeof(types) / sizeof(types[0]); t++) {

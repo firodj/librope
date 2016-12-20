@@ -10,7 +10,7 @@
 #include "rope.h"
 
 static float rand_float() {
-  return (float)random() / INT32_MAX;
+  return (float)rand() / INT32_MAX;
 }
 
 // A selection of different unicode characters to pick from.
@@ -31,7 +31,7 @@ void random_unicode_string(uint8_t *buffer, size_t s) {
   uint8_t *pos = buffer;
   
   while(1) {
-    uint8_t *c = (uint8_t *)UCHARS[random() % (sizeof(UCHARS) / sizeof(UCHARS[0]))];
+    uint8_t *c = (uint8_t *)UCHARS[rand() % (sizeof(UCHARS) / sizeof(UCHARS[0]))];
     
     size_t bytes = strlen((char *)c);
     
@@ -53,7 +53,7 @@ static const char CHARS[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx
 void random_ascii_string(uint8_t *buffer, size_t len) {
   assert(len);
   for (int i = 0; i < len - 1; i++) {
-    buffer[i] = CHARS[random() % (sizeof(CHARS) - 1)];
+    buffer[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
   }
   buffer[len - 1] = '\0';
 }
@@ -312,7 +312,7 @@ static void test_custom_allocator() {
   // custom frees match custom allocs.
   rope *r = rope_new2(_alloc, realloc, _free);
   for (int i = 0; i < 100; i++) {
-    rope_insert(r, random() % (rope_char_count(r) + 1),
+    rope_insert(r, rand() % (rope_char_count(r) + 1),
         (uint8_t *)"Whoa super happy fun times!\n");
   }
 
@@ -361,17 +361,17 @@ static void test_random_edits() {
     
     if (len == 0 || rand_float() < 0.5f) {
       // Insert.
-      random_unicode_string(strbuffer, 1 + random() % max_stringsize);
-      size_t pos = random() % (len + 1);
+      random_unicode_string(strbuffer, 1 + rand() % max_stringsize);
+      size_t pos = rand() % (len + 1);
       
 //      printf("inserting %s at %zd\n", strbuffer, pos);
       rope_insert(r, pos, strbuffer);
       str_insert(str, pos, strbuffer);
     } else {
       // Delete
-      size_t pos = random() % len;
+      size_t pos = rand() % len;
       
-      size_t dellen = random() % 10;
+      size_t dellen = rand() % 10;
       dellen = MIN(len - pos, dellen);
       
 //      printf("deleting %zd chars at %zd\n", dellen, pos);
@@ -406,8 +406,8 @@ static void test_random_wchar_edits() {
     
     if (len == 0 || rand_float() < 0.5f) {
       // Insert.
-      random_unicode_string(strbuffer, 1 + random() % max_stringsize);
-      size_t pos = random() % (len + 1);
+      random_unicode_string(strbuffer, 1 + rand() % max_stringsize);
+      size_t pos = rand() % (len + 1);
       
       // We need to convert pos to the wchar offset. There's a private function in rope.c for this
       // but ...
@@ -418,9 +418,9 @@ static void test_random_wchar_edits() {
       str_insert(str, pos, strbuffer);
     } else {
       // Delete
-      size_t pos = random() % len;
+      size_t pos = rand() % len;
       
-      size_t dellen = random() % 10;
+      size_t dellen = rand() % 10;
       dellen = MIN(len - pos, dellen);
       
       size_t wchar_pos = count_wchars_in_utf8(str->mem, pos);
