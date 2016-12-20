@@ -9,8 +9,6 @@
 extern "C" {
 #endif
 
-void benchmark();
-
 // len is approximate. Might use fewer bytes than that.
 void random_unicode_string(uint8_t *buffer, size_t len);
 

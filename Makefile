@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CFLAGS=-O2 -Wall -I. -std=c99
-CXXFLAGS=-O2 -Wall -I. -std=c99
+CXXFLAGS=-O2 -Wall -I. -std=c++11
 AR=ar
 CC=gcc
 CXX=g++
@@ -31,6 +31,9 @@ librope.a: rope.o
 	$(AR) -rcs $@ $^
 
 # Only need corefoundation to run the tests on mac
-tests: test/tests.c test/benchmark.c test/slowstring.c librope.a
+tests: test/tests.c test/randomstring.c test/slowstring.c librope.a
 	$(CC) $(CFLAGS) -o $@ $^
 
+# Benchmakr
+benchmark: test/benchmark.cpp test/randomstring.c test/slowstring.c librope.a
+	$(CXX) $(CXXFLAGS) -o $@ $^

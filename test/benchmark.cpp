@@ -97,7 +97,9 @@ struct rope_implementation {
   { "c string", &_str_create, &_str_insert, &_str_del, &_str_destroy, &_str_num_chars },
 };
 
-void benchmark() {
+int main(int argc, const char * argv[])
+{
+  
   printf("Benchmarking... (node size = %d, wchar support = %d)\n",
          ROPE_NODE_STR_SIZE, ROPE_WCHAR);
   
@@ -122,8 +124,8 @@ void benchmark() {
     rvals[i] = rand();
   }
 
-//  for (int t = 0; t < sizeof(types) / sizeof(types[0]); t++) {
-  for (int t = 0; t < 1; t++) {
+  for (int t = 0; t < sizeof(types) / sizeof(types[0]); t++) {
+// for (int t = 0; t < 1; t++) {
     for (int i = 0; i < 5; i++) {
       printf("benchmarking %s\n", types[t].name);
       void *r = types[t].create();
@@ -159,5 +161,7 @@ void benchmark() {
   for (int i = 0; i < 100; i++) {
     free(strings[i]);
   }
+
+  return 0;
 }
 
