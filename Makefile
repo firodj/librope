@@ -9,11 +9,12 @@ CXX=g++
 ifeq ($(OS),Windows_NT)
   RM=del
   CFLAGS += -D__USE_MINGW_ANSI_STDIO=1
+  CXXFLAGS += -D__USE_MINGW_ANSI_STDIO=1
 else
   RM=rm
   UNAME := $(shell uname)
   ifeq ($(UNAME), Darwin)
-    CFLAGS += $(CFLAGS) -arch x86_64
+    CFLAGS += -arch x86_64
     CXXFLAGS += -arch x86_64
   endif
 endif
