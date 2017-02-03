@@ -12,6 +12,7 @@
 
 #ifdef __cplusplus
 #include <ext/rope>
+#include <ext/pool_allocator.h>
 #endif
 
 // Wrapper for rope
@@ -58,25 +59,28 @@ static size_t _str_num_chars(void *r) {
 // SGI C++ rope. To enable these benchmarks, compile this file using a C++ compiler. There's a
 // bug with some versions of clang and the rope library - you might have to switch to gcc.
 #ifdef __cplusplus
+typedef __gnu_cxx::rope<char, __gnu_cxx::__pool_alloc<char> > rope_t;
+//typedef __gnu_cxx::crope rope_t;
+
 static void *_sgi_create() {
-  return new __gnu_cxx::crope();
+  return new rope_t();
 }
 
 static void _sgi_insert(void *r, size_t pos, const uint8_t *str) {
-  __gnu_cxx::crope *rope = (__gnu_cxx::crope *)r;
+  rope_t *rope = (rope_t *)r;
   rope->insert(pos, (const char *)str);
 }
 static void _sgi_del(void *r, size_t pos, size_t len) {
-  __gnu_cxx::crope *rope = (__gnu_cxx::crope *)r;
+  rope_t *rope = (rope_t *)r;
   rope->erase(pos, len);
 }
 static void _sgi_destroy(void *r) {
-  __gnu_cxx::crope *rope = (__gnu_cxx::crope *)r;
+  rope_t *rope = (rope_t *)r;
   delete rope;
 }
 
 static size_t _sgi_num_chars(void *r) {
-  __gnu_cxx::crope *rope = (__gnu_cxx::crope *)r;
+  rope_t *rope = (rope_t *)r;
   return rope->size();
 }
 #endif

@@ -35,6 +35,10 @@ librope.a: rope.o
 tests: test/tests.c test/randomstring.c test/slowstring.c librope.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Benchmakr
+# Benchmark with C++
 benchmark: test/benchmark.cpp test/randomstring.c test/slowstring.c librope.a
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# C++ Interface
+ropepp: test/ropepp.cpp librope.a
 	$(CXX) $(CXXFLAGS) -o $@ $^
