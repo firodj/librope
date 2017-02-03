@@ -16,6 +16,11 @@ class jrope {
     jrope(const char *str): s_(0) {
       r_ = rope_new_with_utf8((uint8_t*)str);
     }
+    jrope(size_t num, char c) {
+      char tmp[2] = {c, 0};
+      r_ = rope_new();
+      while (num) { append((const char*)tmp); num--; };
+    }
     const char *c_str() {
       if (s_) r_->free(s_);
       s_ = create_cstr();
@@ -25,9 +30,9 @@ class jrope {
       ROPE_RESULT result = rope_insert(r_, pos, (uint8_t *)str);
     }
     void append(const char* str) {
-      insert(size(), str);
+      insert(length(), str);
     }
-    size_t size() const
+    size_t length() const
     {
       return rope_char_count(r_);
     }
@@ -62,6 +67,36 @@ class jrope {
       res += jr;
       return res;
     }
+    bool operator==(const jrope &jr) const {
+      rope_node *iter1 = &(r_)->head;
+      rope_node *iter2 = &(jr.r_)->head;
+
+      size_t pos1 = 0;
+      size_t pos2 = 0;
+
+      while (iter1 != NULL && iter2 != NULL) {
+        if (*(rope_node_data(iter1)+pos1) != *(rope_node_data(iter2)+pos2)) return false;
+
+        pos1++;
+        if (pos1 >= rope_node_num_bytes(iter1)) {
+          iter1 = iter1->nexts[0].node;
+          pos1 = 0;
+        }
+
+        pos2++;
+        if (pos2 >= rope_node_num_bytes(iter2)) {
+          iter2 = iter2->nexts[0].node;
+          pos2 = 0;
+        }
+      }
+
+      return iter1 == NULL && iter2 == NULL;
+    }
+    void clear()
+    {
+      if (r_) rope_free(r_);
+      r_ = rope_new();
+    }
 
     ~jrope() {
       rope_free(r_);
@@ -73,7 +108,7 @@ class jrope {
       rope_del(r_, pos, num);
     }
     bool empty() const {
-      return size() == 0;
+      return length() == 0;
     }
     void replace(size_t pos, size_t num, const char *str)
     {
@@ -109,8 +144,18 @@ int main(int argc, char* argv[])
 
   printf("%s %s\n", a.c_str(), b.c_str());
 
+  printf("before: %s\n", c.c_str());
   c.replace(1,1, jrope("emb"));
   printf("%s\n", c.c_str());
+
+  a.clear();
+  a += "koda";
+  a.replace(1,1, "u");
+
+  printf("equals? %d, of '%s' == '%s'\n", a == b, a.c_str(), b.c_str());
+
+  jrope z(10, 'z');
+  printf("ngorok = %s\n", z.c_str());
 
   return 0;
 }
